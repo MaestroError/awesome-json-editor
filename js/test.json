@@ -1,0 +1,34 @@
+{
+    "auctions":
+    {
+        "Copart":
+        { 
+            "CA - Los Angeles": {
+                "NJ - Newark": {
+                    "price": "200"
+                },
+                "LS - Beach": {
+                    "price": "150"
+                }
+            },
+            "CA - Los Santos": {
+                "LS - Beach": {
+                    "price": "300"
+                }
+            }
+        },
+        "IAAI":
+        { 
+            "CA - Los Angeles": {
+                "LS - Beach": {
+                    "price": "110"
+                }
+            },
+            "WS - Washington": {
+                "GR - Dallas": {
+                    "price": "40"
+                }
+            }
+        }
+    }
+}

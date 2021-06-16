@@ -1,0 +1,75 @@
+
+<!doctype html>
+<html lang="ge">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="MaestroError">
+    <title>Awesome JSON editor</title>
+
+    <link rel="icon" href="images/icon.png">
+
+    <link href="style/custom.css" rel="stylesheet">
+    <link href="style/tailwind.prod.css" rel="stylesheet">
+
+    <script src="js/vue.global.js"></script>
+
+  </head>
+  <body class="bg-gray-100">
+
+    <div id="app">
+          <div class="m-2 p-3 bg-white rounded">
+            <h1 class="mb-2 w-full">
+              AJE
+              <span v-if="!show" @click="giveMeMyJSON" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700">Give me my JSON!</span>
+              <span v-if="show" @click="editMode" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700">edit my JSON</span>
+            </h1>
+
+            <section v-if="!show" class="flex items-start overflow-x-auto max-h-screen border-2 rounded border-blue-400 p-2">
+
+              <card v-for="(card, index) in mainObject" 
+              :card_key="card.key" 
+              :type="card.type" 
+              :card_n="index" 
+              :inputs="card.inputs"
+              :key="index"
+              @update_card="updateObj"
+              @plus_card="resetCards"
+              @plus_input="plusInput"
+              @remove_input_from_card="removeInput"
+              @set_type="setTypeToCard"
+              :removable="index == mainObject.length-1"
+              @save_card="saveThisCard"></card>
+              
+              
+            </section>
+
+            <section v-if="show" class="json_section flex items-start overflow-x-auto max-h-screen border-2 rounded border-blue-400 p-2">
+              <div class="p-8">
+                <textarea class="h-64 w-full">{{ JSON.stringify(jsn) }}</textarea>
+              </div>
+            </section>
+            
+          </div>
+    </div>
+
+    <!-- Import App -->
+    <script src="js/main.js"></script>
+
+    <!-- Import Components -->
+    <script src="js/components/card.js"></script>
+    <!-- inputs -->
+    <script src="js/components/array.js"></script>
+    <script src="js/components/int.js"></script>
+    <script src="js/components/object.js"></script>
+    <script src="js/components/string.js"></script>
+    <script src="js/components/inputs.js"></script>
+
+    <!-- Mount App -->
+    <script>
+      const mountedApp = app.mount('#app')
+    </script>
+
+  </body>
+</html>
