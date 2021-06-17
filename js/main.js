@@ -109,6 +109,7 @@ const app = Vue.createApp({
             this.mainObject.push(val);
         },
         resetCards(val) {
+            console.log(val);
             let cardIndex = val.childOf.card_n;
             let len = this.mainObject.length-1;
             
@@ -117,6 +118,15 @@ const app = Vue.createApp({
                 this.mainObject.splice(i, 1);
             }
             this.addNewCard(val);
+        },
+        resetBeforeSave() {;
+            let cardIndex = 0;
+            let len = this.mainObject.length-1;
+            
+            for (let i = len; i > cardIndex; i--) {
+                this.saveCard(this.mainObject[i]);
+                this.mainObject.splice(i, 1);
+            }
         },
         saveCard(obj){
             let val = obj.childOf;
@@ -193,6 +203,7 @@ const app = Vue.createApp({
         },
         giveMeMyJSON() {
             var objs = this.mainObject;
+            this.resetBeforeSave();
             objs.forEach((obj) => {
                 if (obj.type == "object") {
                     this.jsn = {}
