@@ -22,7 +22,10 @@
           <div class="m-2 p-3 bg-white rounded">
             <h1 class="mb-2 w-full">
               AJE
-              <span v-if="!show" @click="giveMeMyJSON" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700">Give me my JSON!</span>
+              <span v-if="!show" @click="giveMeMyJSON" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700"> 
+                <b v-if="save">Give</b>
+                <b v-else>Show</b>
+                 me my JSON!</span>
               <span v-if="show" @click="editMode" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700">edit my JSON</span>
             </h1>
 

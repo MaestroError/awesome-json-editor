@@ -71,6 +71,7 @@ const app = Vue.createApp({
             ],
 
             jsn: [],
+            save: false,
             show: false
         }
     },
@@ -216,7 +217,10 @@ const app = Vue.createApp({
                 }
             });
             //console.log(JSON.stringify(this.jsn));
-            this.show=true;
+            if (!this.save) {
+                this.show=true;
+            }
+            
         },
         editMode() {
             this.show=false;
