@@ -27,6 +27,12 @@
                 <b v-else>Show</b>
                  me my JSON!</span>
               <span v-if="show" @click="editMode" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700">edit my JSON</span>
+
+              <div v-if="!show" class="inline-block float-right mt-1 w-8 h-4 bg-gray-300 rounded-full flex-shrink-0 duration-300 ease-in-out cursor-pointer mr-4" :class="{ 'bg-green-400': save}">
+                <div @click="save = !save" class="bg-white w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out" :class="{ 'translate-x-4': save,}">
+  
+                </div>
+              </div>
             </h1>
 
             <section v-if="!show" class="flex items-start overflow-x-auto max-h-screen border-2 rounded border-blue-400 p-2">

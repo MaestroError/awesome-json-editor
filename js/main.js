@@ -219,11 +219,25 @@ const app = Vue.createApp({
             //console.log(JSON.stringify(this.jsn));
             if (!this.save) {
                 this.show=true;
+            } else {
+                this.saveJson();
             }
             
         },
         editMode() {
             this.show=false;
+        },
+        saveJson() {
+            data = {
+                aje: JSON.stringify(this.mainObject),
+                json: JSON.stringify(this.jsn)
+            }
+            fetch("/data/save.php", {
+                method: "POST",
+                body: data
+            }).then(res => {
+                console.log("Request complete! response:", res);
+            });
         }
         
     },
