@@ -22,11 +22,31 @@
           <div class="m-2 p-3 bg-white rounded">
             <h1 class="mb-2 w-full">
               AJE
-              <span v-if="!show" @click="giveMeMyJSON" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700">Give me my JSON!</span>
-              <span v-if="show" @click="editMode" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700">edit my JSON</span>
+              <span v-if="!show && !allowImport" @click="giveMeMyJSON" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700"> 
+                <b v-if="save">Give</b>
+                <b v-else>Show</b>
+                 me my JSON!</span>
+              <span v-if="show" @click="editMode" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700">
+                Let's edit my JSON again
+              </span>
+
+              <div v-if="!show && !allowImport" class="inline-block float-right mt-1 w-8 h-4 bg-gray-300 rounded-full flex-shrink-0 duration-300 ease-in-out cursor-pointer mr-4" :class="{ 'bg-green-400': save}">
+                <div @click="save = !save" class="bg-white w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out" :class="{ 'translate-x-4': save,}">
+  
+                </div>
+              </div>
+
+              <span v-if="canImport && !show" @click="importAJE" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700 mr-4"> 
+                <span class="mr-4">Import AJE</span>
+              </span>
+
+              <span v-if="allowImport" @click="editAJE" class="give-json float-right cursor-pointer text-gray-400 hover:text-gray-700"> 
+                Edit my AJE
+              </span>
+
             </h1>
 
-            <section v-if="!show" class="flex items-start overflow-x-auto max-h-screen border-2 rounded border-blue-400 p-2">
+            <section v-if="!show && !allowImport" class="flex items-start overflow-x-auto max-h-screen border-2 rounded border-blue-400 p-2">
 
               <card v-for="(card, index) in mainObject" 
               :card_key="card.key" 
@@ -48,6 +68,14 @@
             <section v-if="show" class="json_section flex items-start overflow-x-auto max-h-screen border-2 rounded border-blue-400 p-2">
               <div class="p-8">
                 <textarea class="h-64 w-full">{{ JSON.stringify(jsn) }}</textarea>
+              </div>
+            </section>
+
+            <section v-if="allowImport" class="json_section flex items-start overflow-x-auto max-h-screen border-2 rounded border-blue-400 p-2">
+              <div class="p-8">
+                <span v-if="importedAJE.length > 27">(Last) Import:</span>
+                <textarea class="h-64 w-full" v-model="importedAJE"></textarea>
+                <small class="text-gray-400" v-if="importedAJE.length > 27">if you changed your mind just delete text and nothing will change</small>
               </div>
             </section>
             

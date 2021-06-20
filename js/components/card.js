@@ -28,12 +28,12 @@ app.component('card', {
       <h3 v-if="type == 'object'" class="list-type text-lg p-2">
         <span> Object { "{{card_key}}" } </span>
         <span @click="setTo('array')" class="change-type text-gray-300 hover:text-gray-400 text-xs mx-2 cursor-pointer">Array [ ]</span>
-        <img v-if="card_n != 0" @click="saveCard" src="/images/save.png" class="save p-1 hover:bg-green-300 cursor-pointer ml-2" alt="">
+        <img v-if="card_n != 0 && removable" @click="saveCard" src="images/save.png" class="save p-1 hover:bg-green-300 cursor-pointer ml-2" alt="">
       </h3>
       <h3 v-else-if="type == 'array'" class="list-type text-lg p-2">
         <span > Array [ ] </span>
         <span @click="setTo('object')" class="change-type text-gray-300 hover:text-gray-400 text-xs mx-2 cursor-pointer">object { }</span>
-        <img v-if="card_n != 0" @click="saveCard" src="/images/save.png" class="save p-1 hover:bg-green-300 cursor-pointer ml-2" alt="">
+        <img v-if="card_n != 0 && removable" @click="saveCard" src="images/save.png" class="save p-1 hover:bg-green-300 cursor-pointer ml-2" alt="">
       </h3>
 
     <hr class="mx-2">

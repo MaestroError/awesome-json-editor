@@ -1,0 +1,19 @@
+{
+    "Main-Object":
+    {
+        "age":24,
+        "name":"Revaz",
+        "city":
+        {
+            "name":"Revaz"
+        },
+        "Ports":
+        [
+            24,
+            "re",
+            [
+                24
+            ]
+        ]
+    }
+}
