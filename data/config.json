@@ -1,0 +1,7 @@
+{
+    "save": false,
+    "saveUrl": "data/save.json",
+    "fetchUrl": "data/data.aje",
+    "configUrl": "data/config.json",
+    "canImport": true
+}

@@ -1,8 +1,10 @@
 const app = Vue.createApp({
     data() {
         return {
+            // .aje object
             mainObject: [
                 {
+                    // card
                     type:"object",
                     key:"Main-Object",
                     inputs: [
@@ -20,6 +22,7 @@ const app = Vue.createApp({
                             type:"object",
                             key:"city",
                             value:{
+                                // card
                                 type:"object",
                                 key:"city",
                                 inputs: [
@@ -35,6 +38,7 @@ const app = Vue.createApp({
                             type:"array",
                             key:"Ports",
                             value:{
+                                // card
                                 type:"array",
                                 key:"Ports",
                                 inputs: [
@@ -52,6 +56,7 @@ const app = Vue.createApp({
                                         type:"array",
                                         key:"city",
                                         value:{
+                                            // card
                                             type:"array",
                                             key:"city",
                                             inputs: [
@@ -71,19 +76,25 @@ const app = Vue.createApp({
             ],
 
             jsn: [],
+
+            password: "YourPassword",
+            configObj: {},
+            show: false,
+            importedAJE: [],
+            allowImport: false,
+            // main configs
             save: false,
-            show: false
+            saveUrl: "data/save.json",
+            fetchUrl: "data/data.aje",
+            configUrl: "data/config.json",
+            canImport: false,
+
+            jsonDownloadUrl: "",
+            ajeDownloadUrl: "",
+            zipDownloadUrl: ""
         }
     },
     methods: {
-        objToArray($object) {
-            var result = Object.values($object);
-            $object = result;
-            return $object
-        },
-        arrayToObj($array) {
-            var result = Object.assign({}, $array);
-        },
         addEl($object, $el, $key="") {
             if (Array.isArray($object)) {
                 $object.push($el);
@@ -100,7 +111,9 @@ const app = Vue.createApp({
                 if (val.edited == "key") {
                     this.mainObject[val.card_n].inputs[val.inp].value.key = val.value;
                 }
-                this.mainObject[val.card_n].inputs[val.inp].type = val.value.type
+                if (val.value.type) {
+                    this.mainObject[val.card_n].inputs[val.inp].type = val.value.type
+                }
             }
         },
         removeInput(val) {
@@ -202,6 +215,9 @@ const app = Vue.createApp({
             //console.log(jsn);
             return jsn;
         },
+        editMode() {
+            this.show=false;
+        },
         giveMeMyJSON() {
             var objs = this.mainObject;
             this.resetBeforeSave();
@@ -216,7 +232,7 @@ const app = Vue.createApp({
                     this.jsn.push(ret);
                 }
             });
-            //console.log(JSON.stringify(this.jsn));
+
             if (!this.save) {
                 this.show=true;
             } else {
@@ -224,28 +240,81 @@ const app = Vue.createApp({
             }
             
         },
-        editMode() {
-            this.show=false;
-        },
         saveJson() {
+            let mainObj = this.mainObject
+            // save .aje format for future editing in awesome-json-editor
+            // save .json with result JSON information
+            // let user use password and check it on backend if you need extra security
             data = {
-                aje: JSON.stringify(this.mainObject),
-                json: JSON.stringify(this.jsn)
+                aje: JSON.stringify(mainObj,  this.circularReplacer()),
+                json: JSON.stringify(this.jsn),
+                password: this.password
+            };
+            (async () => {
+                const rawResponse = await fetch(this.saveUrl, {
+                  method: 'POST',
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(data)
+                });
+                const urls = await rawResponse.json();
+                 
+                // Based on your needs and backend logic, you can diplay this urls for user, redirect directly or even do nothing, just save this files on server
+                this.ajeDownloadUrl = urls.aje
+                this.jsonDownloadUrl = urls.json
+                this.zipDownloadUrl = urls.zip
+
+              })();
+        },
+        importAJE(){
+            this.allowImport=true;
+            this.canImport = false;
+        },
+        editAJE() {
+            if (this.importedAJE.lenght > 27) {
+                this.mainObject = JSON.parse(this.importedAJE)
             }
-            fetch("/data/save.php", {
-                method: "POST",
-                body: data
-            }).then(res => {
-                console.log("Request complete! response:", res);
-            });
+            this.allowImport=false;
+            this.canImport = true;
+        },
+        circularReplacer() {
+            // need to avoid "TypeError: cyclic object value" error
+            const seen = new WeakSet();
+            return (key, value) => {
+                if (typeof value === "object" && value !== null) {
+                if (seen.has(value)) {
+                    return;
+                }
+                seen.add(value);
+                }
+                return value;
+            };
+        },
+        setConfigs(conf) {
+            this.configObj = conf
+            this.save = conf.save
+            this.saveUrl = conf.saveUrl
+            this.fetchUrl = conf.fetchUrl
+            this.configUrl = conf.configUrl
+            this.allowImport = conf.allowImport
         }
         
     },
     created() {
-        fetch("/js/test.json")
-        .then(response => {
-        return response.json();
-        })
-        .then(data => this.auctions = data.auctions);
+        // uncomment and use this, if you need set configs from server
+        // fetch(this.configUrl)
+        // .then(response => {
+        // return response.json();
+        // })
+        // .then(data => this.setConfigs(data));
+        
+        // uncomment and use this, if you need editing serverside AJE file
+        // fetch(this.fetchUrl)
+        // .then(response => {
+        // return response.json();
+        // })
+        // .then(data => this.mainObject = data);
     }
 })
