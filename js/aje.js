@@ -1,6 +1,6 @@
 class aje {
 
-    constructor(conf) {
+    constructor(conf = {}) {
         this.mainObject = [
             {
                 // card
@@ -73,6 +73,14 @@ class aje {
                 ]
             }
         ];
+        this.allowedConfigs = [
+            'save',
+            'saveUrl',
+            'fetchUrl',
+            'configUrl',
+            'allowImport',
+            'canImport'
+        ]
         this.setConfigs(conf);
         this.jsn = {}
     }
@@ -264,20 +272,27 @@ class aje {
         };
     }
     setConfigs(conf) {
-        this.save = conf.save
-        this.saveUrl = conf.saveUrl
-        this.fetchUrl = conf.fetchUrl
-        this.configUrl = conf.configUrl
-        this.allowImport = conf.allowImport
+        for (let index = 0; index < this.allowedConfigs.length; index++) {
+            if(conf[this.allowedConfigs[index]] !== undefined) {
+                this[this.allowedConfigs[index]] = conf[this.allowedConfigs[index]];
+            }
+        }
     }
+
+    // create GET fetch helper function
+
+    // try to fetch configs if configs not set
+
+    // fetch aje if mainObject not set
+
+    // custom input types
+    // default objects for input types
+    // fixed depth defaults
+
 }
 
 let obj = new aje({
-    save:"",
-    saveUrl:"",
-    fetchUrl:"",
-    configUrl:"",
-    allowImport:"",
+    save:"try",
 });
 
 

@@ -7,13 +7,13 @@ const app = Vue.createApp({
             configObj: {},
             show: false,
             importedAJE: [],
-            allowImport: false,
             // main configs
-            save: false,
-            saveUrl: "data/save.json",
-            fetchUrl: "data/data.aje",
-            configUrl: "data/config.json",
-            canImport: false,
+            // allowImport: false,
+            // save: false,
+            // saveUrl: "data/save.json",
+            // fetchUrl: "data/data.aje",
+            // configUrl: "data/config.json",
+            // canImport: false,
 
             jsonDownloadUrl: "",
             ajeDownloadUrl: "",
@@ -94,11 +94,12 @@ const app = Vue.createApp({
     },
     created() {
         this.aje = new aje({
-            save:"",
-            saveUrl:"",
-            fetchUrl:"",
-            configUrl:"",
-            allowImport:"",
+            save: false,
+            saveUrl: "data/save.json",
+            fetchUrl: "data/data.aje",
+            configUrl: "data/config.json",
+            canImport: false,
+            allowImport: false,
         })
     },
     computed: {
@@ -107,6 +108,15 @@ const app = Vue.createApp({
         },
         jsn() {
             return this.aje.jsn
-        }
+        },
+        save() {
+            return this.aje.save
+        },
+        canImport() {
+            return this.aje.canImport
+        },
+        allowImport() {
+            return this.aje.allowImport
+        },
     }
 })

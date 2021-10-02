@@ -25,10 +25,21 @@ app.component('inputs', {
   emits: ["update_val", "new_card", "remove_input"],
   template: 
   /*html*/
-  `<string v-if="inputType == 'string'" :type="cardType" :keyObj="keyObj" :value="value" @update_value="updateVal" @remove_input="remove" :removable="removable"></string>
-  <int v-if="inputType == 'int'" :type="cardType"  :keyObj="keyObj" :value="value" @update_value="updateVal" @remove_input="remove" :removable="removable"></int>
-  <array v-if="inputType == 'array'" :type="cardType"  :keyObj="keyObj" :value="value" @addCard="newCard" @update_value="updateVal" @remove_input="remove" :removable="removable"></array>
-  <jsobject v-if="inputType == 'object'" :type="cardType"  :keyObj="keyObj" :value="value" @addCard="newCard" @update_value="updateVal" @remove_input="remove" :removable="removable"></jsobject>`,
+  `<string v-if="inputType == 'string'" 
+  :type="cardType" :keyObj="keyObj" :value="value" :removable="removable"
+   @update_value="updateVal" @remove_input="remove"></string>
+
+  <int v-if="inputType == 'int'" 
+  :type="cardType"  :keyObj="keyObj" :value="value" :removable="removable"
+   @update_value="updateVal" @remove_input="remove"></int>
+
+  <array v-if="inputType == 'array'" 
+  :type="cardType"  :keyObj="keyObj" :value="value" :removable="removable"
+   @addCard="newCard" @update_value="updateVal" @remove_input="remove"></array>
+
+  <jsobject v-if="inputType == 'object'" 
+  :type="cardType"  :keyObj="keyObj" :value="value" :removable="removable"
+   @addCard="newCard" @update_value="updateVal" @remove_input="remove"></jsobject>`,
 
 
   data() {
