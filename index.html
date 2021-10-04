@@ -36,7 +36,7 @@
 
               <!-- SWITCH -->
               <div v-if="!show && !allowImport" class="inline-block float-right mt-1 w-8 h-4 bg-gray-300 rounded-full flex-shrink-0 duration-300 ease-in-out cursor-pointer mr-4" :class="{ 'bg-green-400': save}">
-                <div @click="save = !save" class="bg-white w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out" :class="{ 'translate-x-4': save,}">
+                <div @click="this.aje.save = !this.aje.save" class="bg-white w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out" :class="{ 'translate-x-4': save,}">
   
                 </div>
               </div>
@@ -60,6 +60,7 @@
               :card_n="index" 
               :inputs="card.inputs"
               :key="index"
+              :types="allowedTypes"
               @update_card="updateObj"
               @plus_card="resetCards"
               @plus_input="plusInput"
@@ -102,6 +103,7 @@
     <script src="js/components/object.js"></script>
     <script src="js/components/string.js"></script>
     <script src="js/components/inputs.js"></script>
+    <script src="js/components/image.js"></script>
 
     <!-- Mount App -->
     <script>

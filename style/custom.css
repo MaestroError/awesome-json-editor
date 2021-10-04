@@ -71,3 +71,12 @@ html, body {
 .json_section textarea {
   width: calc(100vw - 64px - 64px)
 }
+
+.imageInput  {
+  max-width: 120px;
+}
+
+.imagePrew {
+  float:right;
+  right: 0;
+}

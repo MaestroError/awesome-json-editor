@@ -18,12 +18,16 @@ app.component('card', {
       removable: {
         type: Boolean,
         required: true
+      },
+      types: {
+        type: Object,
+        required: true
       }
     },
     emits: ['save_card','update_card', 'plus_card', 'plus_input', 'remove_input_from_card', 'set_type'],
     template: 
     /*html*/
-    `<div class="list-card flex flex-col shadow-md p-2 rounded mr-3" style="flex: 0 0 16rem;">
+    `<div class="list-card flex flex-col shadow-md p-2 rounded mr-3" style="flex: 0 0 17rem;">
 
       <h3 v-if="type == 'object'" class="list-type text-lg p-2">
         <span> Object { "{{card_key}}" } </span>
@@ -54,10 +58,13 @@ app.component('card', {
 
     <div class="actions">
       <hr class="mb-3 mx-2">
+      <!--
       <button @click="addElement('object')" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">Object { }</button>
       <button @click="addElement('array')" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">Array [ ]</button>
       <button @click="addElement('string')" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">"String"</button>
       <button @click="addElement('int')" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">int</button>
+      -->
+      <button v-for="type in types" @click="addElement(type.type)" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">{{type.name}}</button>
     </div>
 
   </div>`,

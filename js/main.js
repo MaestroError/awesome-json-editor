@@ -100,6 +100,11 @@ const app = Vue.createApp({
             configUrl: "data/config.json",
             canImport: false,
             allowImport: false,
+        });
+        this.aje.addType({
+            name: "Image",
+            type: "image"
+            
         })
     },
     computed: {
@@ -118,5 +123,8 @@ const app = Vue.createApp({
         allowImport() {
             return this.aje.allowImport
         },
+        allowedTypes() {
+            return this.aje.allowedTypes
+        }
     }
 })

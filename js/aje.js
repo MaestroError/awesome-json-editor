@@ -1,78 +1,86 @@
 class aje {
 
-    constructor(conf = {}) {
-        this.mainObject = [
-            {
-                // card
-                type:"object",
-                key:"Main-Object",
-                inputs: [
-                    {
-                        type:"int",
-                        key:"age",
-                        value:24
-                    },
-                    {
-                        type:"string",
-                        key:"name",
-                        value:"Revaz"
-                    },
-                    {
-                        type:"object",
-                        key:"city",
-                        value:{
-                            // card
+    constructor(conf = {}, configUrl = "", fetchUrl = "", fetched = false) {
+        // get main object
+        if(fetched) {
+            this.fetchUrl = fetchUrl;
+            this.getMainObject();
+        } else {
+            this.mainObject = [
+                {
+                    // card
+                    type:"object",
+                    key:"Main-Object",
+                    inputs: [
+                        {
+                            type:"int",
+                            key:"age",
+                            value:24
+                        },
+                        {
+                            type:"string",
+                            key:"name",
+                            value:"Revaz"
+                        },
+                        {
                             type:"object",
                             key:"city",
-                            inputs: [
-                                {
-                                    type:"string",
-                                    key:"name",
-                                    value:"Revaz"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        type:"array",
-                        key:"Ports",
-                        value:{
-                            // card
+                            value:{
+                                // card
+                                type:"object",
+                                key:"city",
+                                inputs: [
+                                    {
+                                        type:"string",
+                                        key:"name",
+                                        value:"Revaz"
+                                    }
+                                ]
+                            }
+                        },
+                        {
                             type:"array",
                             key:"Ports",
-                            inputs: [
-                                {
-                                    type:"int",
-                                    key:"age",
-                                    value:24
-                                },
-                                {
-                                    type:"string",
-                                    key:"name",
-                                    value:"re"
-                                },
-                                {
-                                    type:"array",
-                                    key:"city",
-                                    value:{
-                                        // card
+                            value:{
+                                // card
+                                type:"array",
+                                key:"Ports",
+                                inputs: [
+                                    {
+                                        type:"int",
+                                        key:"age",
+                                        value:24
+                                    },
+                                    {
+                                        type:"string",
+                                        key:"name",
+                                        value:"re"
+                                    },
+                                    {
                                         type:"array",
                                         key:"city",
-                                        inputs: [
-                                            {
-                                                type:"int",
-                                                key:"age",
-                                                value:24
-                                            }
-                                        ]
+                                        value:{
+                                            // card
+                                            type:"array",
+                                            key:"city",
+                                            inputs: [
+                                                {
+                                                    type:"int",
+                                                    key:"age",
+                                                    value:24
+                                                }
+                                            ]
+                                        }
                                     }
-                                }
-                            ]
+                                ]
+                            }
                         }
-                    }
-                ]
-            }
-        ];
+                    ]
+                }
+            ];
+        }
+        
+        // define some data
         this.allowedConfigs = [
             'save',
             'saveUrl',
@@ -81,7 +89,15 @@ class aje {
             'allowImport',
             'canImport'
         ]
-        this.setConfigs(conf);
+        this.defineTypes();
+
+        if (conf && Object.keys(conf).length > 0) {
+            this.setConfigs(conf);
+        } else {
+            this.configUrl = configUrl;
+            this.getConfigs();
+        }
+        
         this.jsn = {}
     }
 
@@ -95,7 +111,7 @@ class aje {
     */
     updateObj(val){
         // set object value by coordinates
-        console.log(val)
+        console.log(this.mainObject)
         this.mainObject[val.card_n].inputs[val.inp][val.edited] = val.value;
         if (this.mainObject[val.card_n].inputs[val.inp].type == "array" || this.mainObject[val.card_n].inputs[val.inp].type == "object") {
             if (val.edited == "key") {
@@ -168,7 +184,7 @@ class aje {
         }
         
         inputs.forEach((obj) => {
-            if (obj.type == "string" || obj.type == "int") {
+            if (obj.type != "array" && obj.type != "object") {
                 jsn[obj.key] = obj.value;
             }
             if (obj.type == "array") {
@@ -191,7 +207,7 @@ class aje {
             var inputs = objs.value.inputs;
         }
         inputs.forEach((obj) => {
-            if (obj.type == "string" || obj.type == "int") {
+            if (obj.type != "array" && obj.type != "object") {
                 jsn.push(obj.value);
             }
             if (obj.type == "array") {
@@ -280,12 +296,66 @@ class aje {
     }
 
     // create GET fetch helper function
+    get(url, data = {}) {
+        return (async () => {
+            const rawResponse = await fetch(url, {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            });
+            const response = await rawResponse.json();
+             
+            return response;
+
+          })();
+    }
 
     // try to fetch configs if configs not set
+    getConfigs() {
+        if(this.save === undefined) {
+            if(this.configUrl) {
+                this.setConfigs(this.get(this.configUrl));
+            }
+        }
+    }
 
     // fetch aje if mainObject not set
+    getMainObject() {
+        if(!this.mainObject || Object.keys(this.mainObject).length === 0) {
+            if(this.fetchUrl) {
+                this.mainObject = this.get(this.fetchUrl);
+            }
+        }
+    }
 
     // custom input types
+    defineTypes() {
+        this.allowedTypes = {
+            "string": {
+                name: '"String"',
+                type: "string"
+            },
+            "int": {
+                name: "Int",
+                type: "int"
+            },
+            "array": {
+                name: "Array [ ]",
+                type: "array"
+            },
+            "object": {
+                name: "Object { }",
+                type: "object"
+            },
+        };
+    }
+    addType(type) {
+        this.allowedTypes[type.type] = type;
+    }
+
     // default objects for input types
     // fixed depth defaults
 

@@ -25,7 +25,8 @@ app.component('inputs', {
   emits: ["update_val", "new_card", "remove_input"],
   template: 
   /*html*/
-  `<string v-if="inputType == 'string'" 
+  `
+  <string v-if="inputType == 'string'" 
   :type="cardType" :keyObj="keyObj" :value="value" :removable="removable"
    @update_value="updateVal" @remove_input="remove"></string>
 
@@ -39,7 +40,12 @@ app.component('inputs', {
 
   <jsobject v-if="inputType == 'object'" 
   :type="cardType"  :keyObj="keyObj" :value="value" :removable="removable"
-   @addCard="newCard" @update_value="updateVal" @remove_input="remove"></jsobject>`,
+   @addCard="newCard" @update_value="updateVal" @remove_input="remove"></jsobject>
+
+   <image_input v-if="inputType == 'image'" 
+   :type="cardType" :keyObj="keyObj" :value="value" :removable="removable"
+    @update_value="updateVal" @remove_input="remove"></image_input>
+   `,
 
 
   data() {
