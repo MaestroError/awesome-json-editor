@@ -87,9 +87,11 @@ class aje {
             'fetchUrl',
             'configUrl',
             'allowImport',
-            'canImport'
+            'canImport',
+            'maxDepth'
         ]
         this.defineTypes();
+        this.denyTypes();
 
         if (conf && Object.keys(conf).length > 0) {
             this.setConfigs(conf);
@@ -111,7 +113,7 @@ class aje {
     */
     updateObj(val){
         // set object value by coordinates
-        console.log(this.mainObject)
+        // console.log(this.mainObject)
         this.mainObject[val.card_n].inputs[val.inp][val.edited] = val.value;
         if (this.mainObject[val.card_n].inputs[val.inp].type == "array" || this.mainObject[val.card_n].inputs[val.inp].type == "object") {
             if (val.edited == "key") {
@@ -130,7 +132,7 @@ class aje {
         this.mainObject.push(val);
     }
     resetCards(val) {
-        console.log(val);
+        // console.log(val);
         let cardIndex = val.childOf.card_n;
         let len = this.mainObject.length-1;
         
@@ -355,9 +357,21 @@ class aje {
     addType(type) {
         this.allowedTypes[type.type] = type;
     }
+    denyTypes() {
+        this.deniedTypes = {
+            "card-0": [
+                "string",
+                "array",
+            ],
+            "card-1": [
+                "image"
+            ]
+        };
+    }
 
     // default objects for input types
     // fixed depth defaults
+    // max depth
 
 }
 
@@ -372,4 +386,4 @@ obj.updateObj({
 
 obj.giveMeMyJSON();
 
-console.log(obj);
+// console.log(obj);

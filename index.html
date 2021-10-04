@@ -61,6 +61,8 @@
               :inputs="card.inputs"
               :key="index"
               :types="allowedTypes"
+              :deny="denyTypes"
+
               @update_card="updateObj"
               @plus_card="resetCards"
               @plus_input="plusInput"

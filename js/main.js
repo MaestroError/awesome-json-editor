@@ -125,6 +125,9 @@ const app = Vue.createApp({
         },
         allowedTypes() {
             return this.aje.allowedTypes
+        },
+        denyTypes() {
+            return this.aje.deniedTypes
         }
     }
 })

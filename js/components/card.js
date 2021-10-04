@@ -22,7 +22,11 @@ app.component('card', {
       types: {
         type: Object,
         required: true
-      }
+      },
+      deny: {
+        type: Object,
+        required: true
+      },
     },
     emits: ['save_card','update_card', 'plus_card', 'plus_input', 'remove_input_from_card', 'set_type'],
     template: 
@@ -64,7 +68,9 @@ app.component('card', {
       <button @click="addElement('string')" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">"String"</button>
       <button @click="addElement('int')" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">int</button>
       -->
-      <button v-for="type in types" @click="addElement(type.type)" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">{{type.name}}</button>
+      <button v-for="type in calcTypes" @click="addElement(type.type)" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">
+        {{type.name}}
+      </button>
     </div>
 
   </div>`,
@@ -72,7 +78,8 @@ app.component('card', {
 
     data() {
       return {
-        test: []
+        test: [],
+        calcTypes: {}
       }
     },
     methods: {
@@ -84,6 +91,11 @@ app.component('card', {
         },
         plusCard(val) {
           val.childOf.card_n=this.card_n;
+          console.log("types");
+          console.log(this.types);
+          console.log("calcTypes");
+          console.log(this.calcTypes);
+          this.calculateTypes(this.types);
           this.$emit('plus_card', val);
         },
         addElement(type) {
@@ -105,11 +117,22 @@ app.component('card', {
         },
         saveCard() {
           this.$emit('save_card', this.card_n);
+        },
+        calculateTypes(types) {
+          const calcTypes = { ...types };
+          if(this.deny["card-"+this.card_n]) {
+            for(var key in this.deny["card-"+this.card_n]) {
+              if (calcTypes[this.deny["card-"+this.card_n][key]]) {
+                // ar ishleba
+                delete calcTypes[this.deny["card-"+this.card_n][key]]
+              }
+            }
+          }
+          this.calcTypes = calcTypes
         }
     },
-    computed: {
-        testing() {
-            return this.cardInputs = this.inputs
-        }
-    }
+    created() {
+      this.calculateTypes(this.types);
+    },
+    computed: {}
   })
