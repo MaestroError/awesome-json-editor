@@ -92,6 +92,7 @@ class aje {
         ]
         this.defineTypes();
         this.denyTypes();
+        this.defineGroups();
 
         if (conf && Object.keys(conf).length > 0) {
             this.setConfigs(conf);
@@ -132,7 +133,6 @@ class aje {
         this.mainObject.push(val);
     }
     resetCards(val) {
-        // console.log(val);
         let cardIndex = val.childOf.card_n;
         let len = this.mainObject.length-1;
         
@@ -161,7 +161,17 @@ class aje {
         obj.type = val.type;
         obj.key = val.key;
         if (obj.type == "array" || obj.type == "object"){
+            if(this.maxDepth){
+                if(this.maxDepth-1 <= val.card_n) {
+                    console.log("ERROR: Max Depth is "+this.maxDepth)
+                    return;
+                }
+            }
             obj.value = {type:obj.type, key:obj.key,inputs:[]};
+            if(val.group) {
+                // console.log(val.group);
+                obj.value.inputs = val.group
+            }
         } else if (obj.type == "int") {
             obj.value = 0;
         } else {
@@ -335,43 +345,154 @@ class aje {
 
     // custom input types
     defineTypes() {
-        this.allowedTypes = {
-            "string": {
-                name: '"String"',
-                type: "string"
-            },
-            "int": {
-                name: "Int",
-                type: "int"
-            },
-            "array": {
-                name: "Array [ ]",
-                type: "array"
-            },
-            "object": {
-                name: "Object { }",
-                type: "object"
-            },
-        };
+        // this.allowedTypes = [
+        //     {
+        //         name: '"String"',
+        //         type: "string"
+        //     },
+        //     {
+        //         name: "Int",
+        //         type: "int"
+        //     },
+        //     {
+        //         name: "Array [ ]",
+        //         type: "array"
+        //     },
+        //     {
+        //         name: "Object { }",
+        //         type: "object"
+        //     },
+        // ];
+        this.allowedTypes = [
+            "string",
+            "int",
+            "array",
+            "object"
+        ];
     }
     addType(type) {
-        this.allowedTypes[type.type] = type;
+        this.allowedTypes.push(type.type);
+        this.objectGroups.all.push(type);
     }
     denyTypes() {
         this.deniedTypes = {
             "card-0": [
-                "string",
-                "array",
+                '"String"',
             ],
             "card-1": [
-                "image"
+                "_image"
+            ],
+            "all": [
+                "Int"
+            ],
+            "Ports": [
+                "_object",
             ]
         };
     }
 
-    // default objects for input types
+    // default objects for input types - groups
+    defineGroups() {
+        this.objectGroups = {
+            "card-1": [
+                {
+                        // card
+                        name: "Example Group 1",
+                        type:"array",
+                        key:"Users",
+                        inputs: [
+                            {
+                                type:"int",
+                                key:"age",
+                                value:24
+                            },
+                            {
+                                type:"string",
+                                key:"name",
+                                value:"re"
+                            },
+                            {
+                                type:"array",
+                                key:"city",
+                                value:{
+                                    // card
+                                    type:"array",
+                                    key:"city",
+                                    inputs: [
+                                        {
+                                            type:"int",
+                                            key:"age",
+                                            value:24
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                },
+            ],
+            "all": [
+                {
+                    // group name to display
+                    name: "Example Group 2",
+                    // input type
+                    type: "object",
+                    // fixed key
+                    key: "example_group",
+                    // group starting (defualt) inputs
+                    inputs: [
+                        {
+                            type:"string",
+                            key:"name",
+                            value:"enter your name here"
+                        },
+                        {
+                            type:"array",
+                            key:"friends",
+                            value: {
+                                type:"array",
+                                key:"friends",
+                                inputs: []
+                            }
+                        },
+                    ]
+                },
+                {
+                    name: '"String"',
+                    type: "string"
+                },
+                {
+                    name: "Int",
+                    type: "int"
+                },
+                {
+                    name: "Array [ ]",
+                    type: "array"
+                },
+                {
+                    name: "Object { }",
+                    type: "object"
+                },
+            ]
+        }
+    }
+
+    
+
+    // group name: all, 
+    addInGroup(group, data) {
+        if(this.objectGroups[group]) {
+            this.objectGroups[group].push(data);
+        } else {
+            this.objectGroups[group] = [data];
+        }
+    }
     // fixed depth defaults
     // max depth
+    setMaxDepth(depth) {
+        this.maxDepth = depth;
+    }
+
+    // GAVAERTIANOT TYPES da GROUPS
 
 }
 

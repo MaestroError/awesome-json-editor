@@ -22,7 +22,7 @@ app.component('inputs', {
       required: true
     }
   },
-  emits: ["update_val", "new_card", "remove_input"],
+  emits: ["update_val", "new_card", "remove_input", "reset_actions"],
   template: 
   /*html*/
   `
@@ -63,6 +63,8 @@ app.component('inputs', {
       remove(){
         this.$emit('remove_input', {inp:this.inp})
       }
+  },
+  created() {
   },
   computed: {
       title() {

@@ -41,7 +41,7 @@ app.component('jsobject', {
         this.$emit('update_value', {value:value, edited:"key"})
       },
     addCard(value, name){
-      console.log(value);
+      // console.log(value);
         value.childOf = {edited:name};
         this.$emit('addCard', value);
       },

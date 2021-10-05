@@ -100,11 +100,11 @@ const app = Vue.createApp({
             configUrl: "data/config.json",
             canImport: false,
             allowImport: false,
+            maxDepth: 3
         });
         this.aje.addType({
             name: "Image",
             type: "image"
-            
         })
     },
     computed: {
@@ -128,6 +128,9 @@ const app = Vue.createApp({
         },
         denyTypes() {
             return this.aje.deniedTypes
+        },
+        objectGroups() {
+            return this.aje.objectGroups
         }
     }
 })

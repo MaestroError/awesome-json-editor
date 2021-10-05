@@ -27,6 +27,9 @@ app.component('card', {
         type: Object,
         required: true
       },
+      groups: {
+        type: Object,
+      }
     },
     emits: ['save_card','update_card', 'plus_card', 'plus_input', 'remove_input_from_card', 'set_type'],
     template: 
@@ -57,7 +60,9 @@ app.component('card', {
       @update_val="updateCard"
       @new_card="plusCard"
       @remove_input="remove_input"
-      :removable="removable"></inputs>
+      :removable="removable"
+      @reset_actions = "resetTypes"
+      ></inputs>
     </ul>
 
     <div class="actions">
@@ -68,9 +73,25 @@ app.component('card', {
       <button @click="addElement('string')" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">"String"</button>
       <button @click="addElement('int')" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">int</button>
       -->
-      <button v-for="type in calcTypes" @click="addElement(type.type)" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">
-        {{type.name}}
-      </button>
+
+      <div v-if="calcTypes">
+        <button v-for="type in calcTypes" @click="addElement(type.type, type.key, type.inputs)" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">
+          {{type.name}}
+        </button>
+      </div>
+
+      <div v-if="cardTypes">
+        <button v-for="type in cardTypes" @click="addElement(type.type, type.key, type.inputs)" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">
+          {{type.name}}
+        </button>
+      </div>
+      
+      <div v-if="deptTypes">
+        <button v-for="type in deptTypes" @click="addElement(type.type, type.key, type.inputs)" class="text-xs text-white py-1 my-1 px-2 rounded bg-blue-400 hover:text-lg hover:bg-blue-500 font-bold mx-1">
+          {{type.name}}
+        </button>
+      </div>
+
     </div>
 
   </div>`,
@@ -79,7 +100,9 @@ app.component('card', {
     data() {
       return {
         test: [],
-        calcTypes: {}
+        // calcTypes: {},
+        deptTypes: {},
+        cardTypes: {},
       }
     },
     methods: {
@@ -91,18 +114,26 @@ app.component('card', {
         },
         plusCard(val) {
           val.childOf.card_n=this.card_n;
-          console.log("types");
-          console.log(this.types);
-          console.log("calcTypes");
-          console.log(this.calcTypes);
-          this.calculateTypes(this.types);
+          setTimeout(() => {
+            // this.calcTypes = this.checkTypes(this.actions);
+          }, 1000);
           this.$emit('plus_card', val);
         },
-        addElement(type) {
+        addElement(type, key=false, group = false) {
           let val = {};
           val.card_n = this.card_n;
           val.type = type;
-          val.key = "key_"+Math.random().toString(16).substr(2, 3);
+          if(!key) {
+            val.key = "key_"+Math.random().toString(16).substr(2, 3);
+          } else {
+            val.key = key
+          }
+
+          // console.log(group);
+          if(group) {
+            val.group = group
+          }
+          
           this.$emit('plus_input', val);
         },
         remove_input(val) {
@@ -118,21 +149,65 @@ app.component('card', {
         saveCard() {
           this.$emit('save_card', this.card_n);
         },
-        calculateTypes(types) {
-          const calcTypes = { ...types };
-          if(this.deny["card-"+this.card_n]) {
-            for(var key in this.deny["card-"+this.card_n]) {
-              if (calcTypes[this.deny["card-"+this.card_n][key]]) {
-                // ar ishleba
-                delete calcTypes[this.deny["card-"+this.card_n][key]]
+        calculateTypes(types, key) {
+          if(!types) {
+            return
+          }
+          // console.log(key);
+          const calcTypes = [ ...types ];
+          if(this.deny[key]) {
+            for(var keyin in this.deny[key]) {
+              if(this.deny[key][keyin].startsWith("_")) {
+                let index = -2;
+                // check for all indexes
+                while(index !== -1) {
+                  index = calcTypes.findIndex(x => x.type === this.deny[key][keyin].slice(1));
+                  if(index > -1) {
+                    calcTypes.splice(index, 1);
+                  }
+                }
+              } else {
+                let index = calcTypes.findIndex(x => x.name === this.deny[key][keyin]);
+                if(index !== -1) {
+                  calcTypes.splice(index, 1);
+                }
               }
+              // FROM OBJECT
+              // if (calcTypes[this.deny[key][keyin]]) {
+              //   delete calcTypes[this.deny[key][keyin]]
+              // }
             }
           }
-          this.calcTypes = calcTypes
-        }
+          return calcTypes
+        },
+        checkTypes(types) {
+          let actions = this.calculateTypes(types, "all");
+          key1 = "card-"+this.card_n;
+          let actions1 = this.calculateTypes(actions, key1);
+          let actions2 = this.calculateTypes(actions1, this.card_key);
+          return actions2;
+        },
+        resetTypes(){
+          let objects = this.groups['card-'+this.card_n]
+          let objects1 = this.groups[this.card_key]
+          this.actions = this.groups.all.concat(objects).concat(objects1).filter(e => e !== undefined);
+          this.calcTypes = this.checkTypes(this.actions);
+        },
+    },
+    renderTracked() {
+      // this.calcTypes = this.checkTypes(this.groups.all);
+      // this.deptTypes = this.checkTypes(this.groups['card-'+this.card_n]);
+      // this.cardTypes = this.checkTypes(this.groups[this.card_key]);
     },
     created() {
-      this.calculateTypes(this.types);
+      // this.resetTypes();
     },
-    computed: {}
+    computed: {
+      calcTypes() {
+        let objects = this.groups['card-'+this.card_n]
+        let objects1 = this.groups[this.card_key]
+        this.actions = this.groups.all.concat(objects).concat(objects1).filter(e => e !== undefined);
+        return this.checkTypes(this.actions);
+      }
+    }
   })
