@@ -20,6 +20,9 @@ app.component('inputs', {
     removable: {
       type: Boolean,
       required: true
+    },
+    denyDel: {
+      type: Boolean,
     }
   },
   emits: ["update_val", "new_card", "remove_input", "reset_actions"],
@@ -27,23 +30,23 @@ app.component('inputs', {
   /*html*/
   `
   <string v-if="inputType == 'string'" 
-  :type="cardType" :keyObj="keyObj" :value="value" :removable="removable"
+  :type="cardType" :keyObj="keyObj" :value="value" :removable="removable" :denyDelete="denyDel"
    @update_value="updateVal" @remove_input="remove"></string>
 
   <int v-if="inputType == 'int'" 
-  :type="cardType"  :keyObj="keyObj" :value="value" :removable="removable"
+  :type="cardType"  :keyObj="keyObj" :value="value" :removable="removable" :denyDelete="denyDel"
    @update_value="updateVal" @remove_input="remove"></int>
 
   <array v-if="inputType == 'array'" 
-  :type="cardType"  :keyObj="keyObj" :value="value" :removable="removable"
+  :type="cardType"  :keyObj="keyObj" :value="value" :removable="removable" :denyDelete="denyDel"
    @addCard="newCard" @update_value="updateVal" @remove_input="remove"></array>
 
   <jsobject v-if="inputType == 'object'" 
-  :type="cardType"  :keyObj="keyObj" :value="value" :removable="removable"
+  :type="cardType"  :keyObj="keyObj" :value="value" :removable="removable" :denyDelete="denyDel"
    @addCard="newCard" @update_value="updateVal" @remove_input="remove"></jsobject>
 
    <image_input v-if="inputType == 'image'" 
-   :type="cardType" :keyObj="keyObj" :value="value" :removable="removable"
+   :type="cardType" :keyObj="keyObj" :value="value" :removable="removable" :denyDelete="denyDel"
     @update_value="updateVal" @remove_input="remove"></image_input>
    `,
 

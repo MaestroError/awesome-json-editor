@@ -29,6 +29,8 @@ app.component('card', {
       },
       groups: {
         type: Object,
+      },
+      deny_delete: {
       }
     },
     emits: ['save_card','update_card', 'plus_card', 'plus_input', 'remove_input_from_card', 'set_type'],
@@ -62,6 +64,7 @@ app.component('card', {
       @remove_input="remove_input"
       :removable="removable"
       @reset_actions = "resetTypes"
+      :denyDel="allowDelete"
       ></inputs>
     </ul>
 
@@ -193,6 +196,17 @@ app.component('card', {
           this.actions = this.groups.all.concat(objects).concat(objects1).filter(e => e !== undefined);
           this.calcTypes = this.checkTypes(this.actions);
         },
+        checkDelete() {
+          if(this.deny_delete) {
+            if(this.deny_delete.indexOf("all") !== -1 || this.deny_delete.indexOf("card-"+this.card_n-1) !== -1 || this.deny_delete.indexOf(this.card_key) !== -1){
+              return true
+            } else {
+              return false
+            }
+          } else {
+            return false
+          }
+        }
     },
     renderTracked() {
       // this.calcTypes = this.checkTypes(this.groups.all);
@@ -200,7 +214,7 @@ app.component('card', {
       // this.cardTypes = this.checkTypes(this.groups[this.card_key]);
     },
     created() {
-      // this.resetTypes();
+        // this.allowDelete = this.checkDelete();
     },
     computed: {
       calcTypes() {
@@ -208,6 +222,17 @@ app.component('card', {
         let objects1 = this.groups[this.card_key]
         this.actions = this.groups.all.concat(objects).concat(objects1).filter(e => e !== undefined);
         return this.checkTypes(this.actions);
+      },
+      allowDelete() {
+        if(this.deny_delete) {
+          if(this.deny_delete.indexOf("all") !== -1 || this.deny_delete.indexOf("card-"+this.card_n-1) !== -1 || this.deny_delete.indexOf(this.card_key) !== -1){
+            return true
+          } else {
+            return false
+          }
+        } else {
+          return false
+        }
       }
     }
   })

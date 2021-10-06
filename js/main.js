@@ -100,12 +100,64 @@ const app = Vue.createApp({
             configUrl: "data/config.json",
             canImport: false,
             allowImport: false,
-            maxDepth: 3
+
+            maxDepth: 3,
+            denyDelete: [
+                "Ports",
+                // "all"
+            ],
+
+            allowActions: true,
+            importDeny: [
+                {
+                    group:"all",
+                    type:"_array"
+                }
+            ],
+            importGroups: [
+                {
+                    group:"all",
+                    data: {
+                        name: "Example Group 1",
+                        type: "object",
+                        key: "User",
+                        inputs: [
+                            {
+                                type:"int",
+                                key:"age",
+                                value:24
+                            },
+                            {
+                                type:"string",
+                                key:"name",
+                                value:"re"
+                            },
+                            {
+                                type:"array",
+                                key:"city",
+                                value:{
+                                    // card
+                                    type:"array",
+                                    key:"city",
+                                    inputs: [
+                                        {
+                                            type:"int",
+                                            key:"age",
+                                            value:24
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
         });
         this.aje.addType({
             name: "Image",
             type: "image"
-        })
+        }),
+        console.log(this.denyDelete);
     },
     computed: {
         mainObject() {
@@ -131,6 +183,9 @@ const app = Vue.createApp({
         },
         objectGroups() {
             return this.aje.objectGroups
+        },
+        denyDelete() {
+            return this.aje.denyDelete
         }
     }
 })

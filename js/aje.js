@@ -88,11 +88,12 @@ class aje {
             'configUrl',
             'allowImport',
             'canImport',
-            'maxDepth'
+            'maxDepth',
+            'allowActions',
+            'importDeny',
+            'importGroups',
+            "denyDelete"
         ]
-        this.defineTypes();
-        this.denyTypes();
-        this.defineGroups();
 
         if (conf && Object.keys(conf).length > 0) {
             this.setConfigs(conf);
@@ -286,43 +287,184 @@ class aje {
             this.mainObject = JSON.parse(aje)
         }
     }
-    circularReplacer() {
-        // need to avoid "TypeError: cyclic object value" error
-        const seen = new WeakSet();
-        return (key, value) => {
-            if (typeof value === "object" && value !== null) {
-            if (seen.has(value)) {
-                return;
-            }
-            seen.add(value);
-            }
-            return value;
-        };
+
+    /* ACTIONS */
+
+    // custom input types
+    defineTypes() {
+        this.allowedTypes = [
+            "string",
+            "int",
+            "array",
+            "object"
+        ];
     }
-    setConfigs(conf) {
-        for (let index = 0; index < this.allowedConfigs.length; index++) {
-            if(conf[this.allowedConfigs[index]] !== undefined) {
-                this[this.allowedConfigs[index]] = conf[this.allowedConfigs[index]];
+    addType(type) {
+        this.allowedTypes.push(type.type);
+        this.objectGroups.all.push(type);
+    }
+    
+    /* importDeny:
+    [
+        {
+            group: "card-3" | "all" | "Key"
+            type: "Image" | "_array"
+        }
+    ] 
+    */
+    denyTypes() {
+        this.deniedTypes = {}
+        if(this.allowActions) {
+            if(this.importDeny) {
+                for(var action in this.importDeny) {
+                    this.addDeny(this.importDeny[action].group, this.importDeny[action].type)
+                }
             }
+        }
+        /* example
+        this.deniedTypes = {
+            "card-0": [
+                '"String"',
+            ],
+            "card-1": [
+                "_image"
+            ],
+            "all": [
+                "Int"
+            ],
+            "Ports": [
+                "_object",
+            ]
+        };
+        */
+    }
+
+    addDeny(group, data) {
+        if(this.deniedTypes[group]) {
+            this.deniedTypes[group].push(data);
+        } else {
+            this.deniedTypes[group] = [data];
         }
     }
 
-    // create GET fetch helper function
-    get(url, data = {}) {
-        return (async () => {
-            const rawResponse = await fetch(url, {
-              method: 'GET',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(data)
-            });
-            const response = await rawResponse.json();
-             
-            return response;
+    // default objects for input types - groups
+    defineGroups() {
+        this.objectGroups = {
+            "all": [
+                {
+                    name: '"String"',
+                    type: "string"
+                },
+                {
+                    name: "Int",
+                    type: "int"
+                },
+                {
+                    name: "Array [ ]",
+                    type: "array"
+                },
+                {
+                    name: "Object { }",
+                    type: "object"
+                },
+            ]
+        };
+        if(this.allowActions) {
+            if(this.importGroups) {
+                for(var action in this.importGroups) {
+                    // console.log(action);
+                    this.addInGroup(this.importGroups[action].group, this.importGroups[action].data)
+                }
+            }
+        }
+        /* example
+        this.objectGroups["Ports"] = [
+            {
+                    // card
+                    name: "Example Group 1",
+                    type:"array",
+                    key:"User",
+                    inputs: [
+                        {
+                            type:"int",
+                            key:"age",
+                            value:24
+                        },
+                        {
+                            type:"string",
+                            key:"name",
+                            value:"re"
+                        },
+                        {
+                            type:"array",
+                            key:"city",
+                            value:{
+                                // card
+                                type:"array",
+                                key:"city",
+                                inputs: [
+                                    {
+                                        type:"int",
+                                        key:"age",
+                                        value:24
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+            },
+            {
+                // group name to display
+                name: "Example Group 2",
+                // input type
+                type: "object",
+                // fixed key
+                key: "example_group",
+                // group starting (defualt) inputs
+                inputs: [
+                    {
+                        type:"string",
+                        key:"name",
+                        value:"enter your name here"
+                    },
+                    {
+                        type:"array",
+                        key:"friends",
+                        value: {
+                            type:"array",
+                            key:"friends",
+                            inputs: [
+                                {
+                                    type:"string",
+                                    value:"enter your name here"
+                                },
+                            ]
+                        }
+                    },
+                ]
+            },
+        ];
+        */
+    }
 
-          })();
+    // group name: all, 
+    addInGroup(group, data) {
+        if(this.objectGroups[group]) {
+            this.objectGroups[group].push(data);
+        } else {
+            this.objectGroups[group] = [data];
+        }
+    }
+
+    /* END ACTIONS */
+
+
+
+    /* CONFIGS */
+
+    // max depth
+    setMaxDepth(depth) {
+        this.maxDepth = depth;
     }
 
     // try to fetch configs if configs not set
@@ -343,158 +485,68 @@ class aje {
         }
     }
 
-    // custom input types
-    defineTypes() {
-        // this.allowedTypes = [
-        //     {
-        //         name: '"String"',
-        //         type: "string"
-        //     },
-        //     {
-        //         name: "Int",
-        //         type: "int"
-        //     },
-        //     {
-        //         name: "Array [ ]",
-        //         type: "array"
-        //     },
-        //     {
-        //         name: "Object { }",
-        //         type: "object"
-        //     },
-        // ];
-        this.allowedTypes = [
-            "string",
-            "int",
-            "array",
-            "object"
-        ];
+    // let able to import actions and denies from config
+    allowCustomActions() {
+        this.allowActions = true;
     }
-    addType(type) {
-        this.allowedTypes.push(type.type);
-        this.objectGroups.all.push(type);
+    
+    setConfigs(conf) {
+        for (let index = 0; index < this.allowedConfigs.length; index++) {
+            if(conf[this.allowedConfigs[index]] !== undefined) {
+                this[this.allowedConfigs[index]] = conf[this.allowedConfigs[index]];
+            }
+        }
+        
+        this.defineTypes();
+        this.denyTypes();
+        this.defineGroups();
     }
-    denyTypes() {
-        this.deniedTypes = {
-            "card-0": [
-                '"String"',
-            ],
-            "card-1": [
-                "_image"
-            ],
-            "all": [
-                "Int"
-            ],
-            "Ports": [
-                "_object",
-            ]
+
+    /* END CONFIGS */
+
+
+    /* HELPERS */
+
+    
+    circularReplacer() {
+        // need to avoid "TypeError: cyclic object value" error
+        const seen = new WeakSet();
+        return (key, value) => {
+            if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+            }
+            return value;
         };
     }
 
-    // default objects for input types - groups
-    defineGroups() {
-        this.objectGroups = {
-            "card-1": [
-                {
-                        // card
-                        name: "Example Group 1",
-                        type:"array",
-                        key:"Users",
-                        inputs: [
-                            {
-                                type:"int",
-                                key:"age",
-                                value:24
-                            },
-                            {
-                                type:"string",
-                                key:"name",
-                                value:"re"
-                            },
-                            {
-                                type:"array",
-                                key:"city",
-                                value:{
-                                    // card
-                                    type:"array",
-                                    key:"city",
-                                    inputs: [
-                                        {
-                                            type:"int",
-                                            key:"age",
-                                            value:24
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                },
-            ],
-            "all": [
-                {
-                    // group name to display
-                    name: "Example Group 2",
-                    // input type
-                    type: "object",
-                    // fixed key
-                    key: "example_group",
-                    // group starting (defualt) inputs
-                    inputs: [
-                        {
-                            type:"string",
-                            key:"name",
-                            value:"enter your name here"
-                        },
-                        {
-                            type:"array",
-                            key:"friends",
-                            value: {
-                                type:"array",
-                                key:"friends",
-                                inputs: []
-                            }
-                        },
-                    ]
-                },
-                {
-                    name: '"String"',
-                    type: "string"
-                },
-                {
-                    name: "Int",
-                    type: "int"
-                },
-                {
-                    name: "Array [ ]",
-                    type: "array"
-                },
-                {
-                    name: "Object { }",
-                    type: "object"
-                },
-            ]
-        }
+    // create GET fetch helper function
+    get(url, data = {}) {
+        return (async () => {
+            const rawResponse = await fetch(url, {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            });
+            const response = await rawResponse.json();
+             
+            return response;
+
+          })();
     }
 
-    
+    /* END HELPERS */
 
-    // group name: all, 
-    addInGroup(group, data) {
-        if(this.objectGroups[group]) {
-            this.objectGroups[group].push(data);
-        } else {
-            this.objectGroups[group] = [data];
-        }
-    }
-    // fixed depth defaults
-    // max depth
-    setMaxDepth(depth) {
-        this.maxDepth = depth;
-    }
-
-    // GAVAERTIANOT TYPES da GROUPS
 
 }
+
+
+// test
 
 let obj = new aje({
     save:"try",
