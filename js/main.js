@@ -100,13 +100,14 @@ const app = Vue.createApp({
             configUrl: "data/config.json",
             canImport: false,
             allowImport: false,
-
+            // maximum depth of json objects
             maxDepth: 3,
+            // deny deleting some objects
             denyDelete: [
                 "Ports",
                 // "all"
             ],
-
+            // allows to import custom actions and denies
             allowActions: true,
             importDeny: [
                 {
