@@ -4,6 +4,7 @@ class aje {
         // get main object
         if(fetched) {
             this.fetchUrl = fetchUrl;
+            // use get main object outside to interact with computed properties
             this.getMainObject();
         } else {
             this.mainObject = [
@@ -312,8 +313,10 @@ class aje {
         ];
     }
     addType(type) {
-        this.allowedTypes.push(type.type);
-        this.objectGroups.all.push(type);
+        if(this.allowedTypes !== undefined) {
+            this.allowedTypes.push(type.type);
+            this.objectGroups.all.push(type);
+        }
     }
     
     /* importDeny:
@@ -463,7 +466,6 @@ class aje {
     addInGroup(group, data) {
         if(this.objectGroups[group]) {
             // this.objectGroups[group].push(data);
-            console.log();
             this.objectGroups[group] = this.objectGroups[group].concat(data);
         } else {
             this.objectGroups[group] = [data];
@@ -485,7 +487,9 @@ class aje {
     getConfigs() {
         if(this.save === undefined) {
             if(this.configUrl) {
-                this.setConfigs(this.get(this.configUrl));
+                this.get(this.configUrl).then((configs) => {
+                    this.setConfigs(configs);
+                });
             }
         }
     }
@@ -494,9 +498,15 @@ class aje {
     getMainObject() {
         if(!this.mainObject || Object.keys(this.mainObject).length === 0) {
             if(this.fetchUrl) {
-                this.mainObject = this.get(this.fetchUrl);
+                this.get(this.fetchUrl).then((data) => {
+                    this.setMainObject(data);
+                });
             }
         }
+    }
+
+    setMainObject(mainObject) {
+        this.mainObject = mainObject;
     }
 
     // let able to import actions and denies from config
@@ -538,7 +548,8 @@ class aje {
 
     // create GET fetch helper function
     get(url) {
-        return (async () => {
+        
+        let resp = (async () => {
             const rawResponse = await fetch(url, {
               method: 'GET',
               headers: {
@@ -547,10 +558,11 @@ class aje {
               }
             });
             const response = await rawResponse.json();
-             
+
             return response;
 
           })();
+          return resp
     }
 
     /* END HELPERS */

@@ -191,6 +191,10 @@ const app = Vue.createApp({
                 },
             ]
         });
+        
+        // this.aje = new aje({}, "data/config.json", "data/data.aje", true);
+        // this.aje.getMainObject();
+
         this.aje.addType({
             name: "Image",
             type: "image"
