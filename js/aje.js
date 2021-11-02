@@ -1,6 +1,8 @@
 class aje {
 
     constructor(conf = {}, configUrl = "", fetchUrl = "", fetched = false) {
+        this.defineGroups();
+        this.defineTypes();
         // get main object
         if(fetched) {
             this.fetchUrl = fetchUrl;
@@ -102,6 +104,7 @@ class aje {
             this.configUrl = configUrl;
             this.getConfigs();
         }
+
         
         this.jsn = {}
     }
@@ -384,14 +387,7 @@ class aje {
                 },
             ]
         };
-        if(this.allowActions) {
-            if(this.importGroups) {
-                for(var action in this.importGroups) {
-                    // console.log(action);
-                    this.addInGroup(this.importGroups[action].group, this.importGroups[action].data)
-                }
-            }
-        }
+        
         /* example
         this.objectGroups["Ports"] = [
             {
@@ -462,6 +458,17 @@ class aje {
         */
     }
 
+    defineImportedGroups() {
+        if(this.allowActions) {
+            if(this.importGroups) {
+                for(var action in this.importGroups) {
+                    // console.log(action);
+                    this.addInGroup(this.importGroups[action].group, this.importGroups[action].data)
+                }
+            }
+        }
+    }
+
     // group name: all, 
     addInGroup(group, data) {
         if(this.objectGroups[group]) {
@@ -521,9 +528,9 @@ class aje {
             }
         }
         
-        this.defineTypes();
+        console.log(this);
+        this.defineImportedGroups();
         this.denyTypes();
-        this.defineGroups();
     }
 
     /* END CONFIGS */
