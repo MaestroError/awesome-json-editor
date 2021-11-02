@@ -537,15 +537,14 @@ class aje {
     }
 
     // create GET fetch helper function
-    get(url, data = {}) {
+    get(url) {
         return (async () => {
             const rawResponse = await fetch(url, {
               method: 'GET',
               headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(data)
+              }
             });
             const response = await rawResponse.json();
              
