@@ -116,13 +116,15 @@ class aje {
     updateObj(val){
         // set object value by coordinates
         // console.log(this.mainObject)
-        this.mainObject[val.card_n].inputs[val.inp][val.edited] = val.value;
-        if (this.mainObject[val.card_n].inputs[val.inp].type == "array" || this.mainObject[val.card_n].inputs[val.inp].type == "object") {
-            if (val.edited == "key") {
-                this.mainObject[val.card_n].inputs[val.inp].value.key = val.value;
-            }
-            if (val.value.type) {
-                this.mainObject[val.card_n].inputs[val.inp].type = val.value.type
+        if(this.mainObject[val.card_n].inputs[val.inp] !== undefined) {
+            this.mainObject[val.card_n].inputs[val.inp][val.edited] = val.value;
+            if (this.mainObject[val.card_n].inputs[val.inp].type == "array" || this.mainObject[val.card_n].inputs[val.inp].type == "object") {
+                if (val.edited == "key") {
+                    this.mainObject[val.card_n].inputs[val.inp].value.key = val.value;
+                }
+                if (val.value.type) {
+                    this.mainObject[val.card_n].inputs[val.inp].type = val.value.type
+                }
             }
         }
     }
@@ -131,7 +133,15 @@ class aje {
         this.mainObject[val.card_n].inputs.splice(val.inp, 1);
     }
     addNewCard(val) {
-        this.mainObject.push(val);
+        if(this.maxDepth){
+            if(this.maxDepth-1 <= val.childOf.card_n) {
+                console.log("ERROR: Max Depth is "+this.maxDepth)
+                return;
+            }
+        }
+        // this.mainObject.push(val);
+        // this.mainObject = [... this.mainObject, val];
+        this.mainObject = this.mainObject.concat(val);
     }
     resetCards(val) {
         let cardIndex = val.childOf.card_n;
@@ -161,6 +171,7 @@ class aje {
         let obj = {};
         obj.type = val.type;
         obj.key = val.key;
+        // console.log(val);
         if (obj.type == "array" || obj.type == "object"){
             if(this.maxDepth){
                 if(this.maxDepth-1 <= val.card_n) {
@@ -178,7 +189,8 @@ class aje {
         } else {
             obj.value = "";
         }
-        this.mainObject[val.card_n].inputs.push(obj)
+        // this.mainObject[val.card_n].inputs.push(obj)
+        this.mainObject[val.card_n].inputs = this.mainObject[val.card_n].inputs.concat(obj);
     }
     setTypeToCard(val) {
         this.mainObject[val.card_n].type = val.type;
@@ -450,7 +462,9 @@ class aje {
     // group name: all, 
     addInGroup(group, data) {
         if(this.objectGroups[group]) {
-            this.objectGroups[group].push(data);
+            // this.objectGroups[group].push(data);
+            console.log();
+            this.objectGroups[group] = this.objectGroups[group].concat(data);
         } else {
             this.objectGroups[group] = [data];
         }

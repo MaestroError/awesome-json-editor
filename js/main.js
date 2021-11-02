@@ -39,6 +39,7 @@ const app = Vue.createApp({
             this.aje.addNewCard(val);
         },
         resetCards(val) {
+            // console.log(this.objectGroups);
             this.aje.resetCards(val);
         },
         resetBeforeSave() {
@@ -151,7 +152,43 @@ const app = Vue.createApp({
                             }
                         ]
                     }
-                }
+                },
+                {
+                    group:"all",
+                    data: {
+                        name: "Products",
+                        type: "object",
+                        key: "Prod",
+                        inputs: [
+                            {
+                                type:"int",
+                                key:"age",
+                                value:24
+                            },
+                            {
+                                type:"string",
+                                key:"name",
+                                value:"re"
+                            },
+                            {
+                                type:"array",
+                                key:"city",
+                                value:{
+                                    // card
+                                    type:"array",
+                                    key:"city",
+                                    inputs: [
+                                        {
+                                            type:"int",
+                                            key:"age",
+                                            value:24
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                },
             ]
         });
         this.aje.addType({
