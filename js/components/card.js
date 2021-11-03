@@ -134,7 +134,7 @@ app.component('card', {
 
           // console.log(group);
           if(group) {
-            val.group = group
+            val.group=JSON.parse(JSON.stringify(group));
           }
           
           this.$emit('plus_input', val);

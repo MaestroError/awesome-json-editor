@@ -119,7 +119,7 @@ class aje {
     */
     updateObj(val){
         // set object value by coordinates
-        // console.log(this.mainObject)
+        // console.log(this.objectGroups)
         if(this.mainObject[val.card_n].inputs[val.inp] !== undefined) {
             this.mainObject[val.card_n].inputs[val.inp][val.edited] = val.value;
             if (this.mainObject[val.card_n].inputs[val.inp].type == "array" || this.mainObject[val.card_n].inputs[val.inp].type == "object") {
@@ -237,15 +237,18 @@ class aje {
         }
         inputs.forEach((obj) => {
             if (obj.type != "array" && obj.type != "object") {
-                jsn.push(obj.value);
+                // jsn.push(obj.value);
+                jsn = jsn.concat(obj.value);
             }
             if (obj.type == "array") {
                 let ret = this.takeJsonFromArr(obj)
-                jsn.push(ret)
+                // jsn.push(ret)
+                jsn = jsn.concat(ret);
             }
             if (obj.type == "object") {
                 let ret = this.takeJsonFromObj(obj)
-                jsn.push(ret)
+                // jsn.push(ret)
+                jsn = jsn.concat(ret);
             }
         });
         //console.log(jsn);
@@ -263,7 +266,8 @@ class aje {
             } else if(obj.type == "array") {
                 this.jsn = []
                 let ret = this.takeJsonFromArr(obj)
-                this.jsn.push(ret);
+                // this.jsn.push(ret);
+                this.jsn = this.jsn.concat(ret);
             }
         });
 
@@ -317,8 +321,10 @@ class aje {
     }
     addType(type) {
         if(this.allowedTypes !== undefined) {
-            this.allowedTypes.push(type.type);
-            this.objectGroups.all.push(type);
+            // this.allowedTypes.push(type.type);
+            this.allowedTypes = this.allowedTypes.concat(type.type);
+            // this.objectGroups.all.push(type);
+            this.objectGroups.all = this.objectGroups.all.concat(type);
         }
     }
     
@@ -359,7 +365,8 @@ class aje {
 
     addDeny(group, data) {
         if(this.deniedTypes[group]) {
-            this.deniedTypes[group].push(data);
+            // this.deniedTypes[group].push(data);
+            this.deniedTypes[group] = this.deniedTypes[group].concat(data);
         } else {
             this.deniedTypes[group] = [data];
         }
@@ -475,7 +482,8 @@ class aje {
             // this.objectGroups[group].push(data);
             this.objectGroups[group] = this.objectGroups[group].concat(data);
         } else {
-            this.objectGroups[group] = [data];
+            this.objectGroups[group] = [];
+            this.objectGroups[group] = this.objectGroups[group].concat(data);
         }
     }
 
@@ -528,7 +536,7 @@ class aje {
             }
         }
         
-        console.log(this);
+        // console.log(this);
         this.defineImportedGroups();
         this.denyTypes();
     }
