@@ -1,5 +1,9 @@
 class aje {
 
+    /**
+     * @todo Refactor aje Class, make it simple and add lot of comments
+     */
+
     constructor(conf = {}, configUrl = "", fetchUrl = "", fetched = false) {
         this.defineGroups();
         this.defineTypes();
