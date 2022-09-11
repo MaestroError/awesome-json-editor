@@ -26,7 +26,7 @@ app.component('image_input', {
 
       <img v-if="removable && !denyDelete" src="images/trash.png" @click="removeInput" class="trash p-1 bg-blue-100 hover:bg-blue-300 cursor-pointer ml-2" alt="">
     </li>
-    <li v-else-if="type == 'object'" class="list-item my-2">
+    <li v-else-if="type == 'object'" class="list-item my-2 mx-2">
       <input class="key text-sm text-green-600  bg-gray-200 p-2  rounded-md hover:bg-white" type="text" placeholder="key" :value="keyObj" v-on:input="updateKey($event.target)"> : 
       <input v-if="!image" type="file" class="imageInput text-sm text-green-700 bg-gray-200 p-2 my-1 rounded-md hover:bg-white w-48 h-16" v-on:change="updateValue($event.target)" accept="image/*">
       <img v-if="image" :src="image" @click="changeImage" class="imagePrew w-8 p-1 bg-blue-100 hover:bg-blue-300 cursor-pointer ml-2" alt="">

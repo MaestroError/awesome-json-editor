@@ -20,7 +20,7 @@ app.component('jsobject', {
   emits: ["update_value", "remove_input", "addCard"],
   template: 
   /*html*/
-  `<li v-if="type == 'array'" class="list-item my-2">
+  `<li v-if="type == 'array'" class="list-item my-2 mx-2">
       <span @click="addCard(value, 'value')" class="text-sm text-green-900 bg-gray-400 p-2 rounded-md hover:bg-white cursor-pointer">{ object }</span>
       <img v-if="removable && !denyDelete" src="images/trash.png" @click="removeInput" class="trash p-1 bg-blue-100 hover:bg-blue-300 cursor-pointer ml-2" alt="">
     </li>
