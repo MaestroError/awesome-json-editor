@@ -11,15 +11,22 @@ You can easily customize UI, just edit vue components, add some more css or even
 ``git clone https://github.com/MaestroError/awesome-json-editor``
 
 #### To Do  
-- check&add: need a possibility to add a default object (as a configuration), for creating the more advanced user experience
-- check&add: need to add a new configuration for disabling/enabling data types and naming them.
+- check&add: need a possibility to add a default object (as a configuration), for creating the more advanced user experience ??
+- check&add: need to add a new configuration for disabling/enabling data types and naming them. ??
 
 ### Future advancement
 - Refactor aje Class, make it simple and add comments for everything
 - Rename parts of aje more logically
+- Advance aje's API to make it more flexible and readable, add separate methods for all element of class
+- Standardize configs and write documentation for every entry in config
+- Make it easy to use, add getting started guide and Docs for methods (API of aje)
+- Make components buildable as class, make ready to use methods from aje and their templates overridable
+- Create examples (with default UI and others)
+- Write docs to explain how to manage it from server and save/use it like admin panel
 - Find out how to serve aje class as separate module for: JS, Node & Vue to use in any custom UI
 - Find out all unnecessary lines of code and remove
 - Make this UI Buildable inside any div element, to be served from CDN
+- Try to make example for server-side use as admin panel and add it in docs
 
 ## Features
 Main features for AJE

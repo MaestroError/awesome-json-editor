@@ -1,7 +1,7 @@
 class aje {
 
     /**
-     * @todo Refactor aje Class, make it simple and add lot of comments
+     * @todo Refactor aje Class, make it simple and add lots of comments
      */
 
     constructor(conf = {}, configUrl = "", fetchUrl = "", fetched = false) {
@@ -13,6 +13,7 @@ class aje {
             // use get main object outside to interact with computed properties
             this.getMainObject();
         } else {
+            // Default main object
             this.mainObject = [
                 {
                     // card
@@ -299,7 +300,7 @@ class aje {
             });
             const urls = await rawResponse.json();
              
-            // Based on your needs and backend logic, you can diplay this urls for user, redirect directly or even do nothing, just save this files on server
+            // Based on your needs and backend logic, you can display this urls for user, redirect directly or even do nothing, just save this files on server
             this.ajeDownloadUrl = urls.aje
             this.jsonDownloadUrl = urls.json
             this.zipDownloadUrl = urls.zip
